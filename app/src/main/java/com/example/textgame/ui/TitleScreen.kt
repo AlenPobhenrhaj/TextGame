@@ -14,20 +14,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role.Companion.Image
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.example.textgame.viewmodel.TitleViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.example.textgame.R
 
+
 @Composable
-fun TitleScreen() {
-    // Getting the ViewModel
+fun TitleScreen(navController: NavController) {
     val viewModel: TitleViewModel = viewModel()
+
+    val navigateToCharacterSelectionScreen by viewModel.navigateToCharacterSelectionScreen.observeAsState(initial = false)
+
+    if (navigateToCharacterSelectionScreen) {
+        navController.navigate("characterClassSelectionScreen") {
+            // Ensures we won't navigate twice to the same route
+            launchSingleTop = true
+        }
+        // Reset the navigation event
+        viewModel.navigateToCharacterSelectionScreen.value = false
+    }
 
     Box(
         modifier = Modifier.fillMaxSize().background(Color.Black),
@@ -45,7 +56,7 @@ fun TitleScreen() {
         ) {
             Text(
                 text = "Your Game Title",
-                color = Color.Red,
+                color = Color.Red, // Updated the color import statement
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -62,11 +73,13 @@ fun TitleScreen() {
     }
 }
 
-@Preview(showBackground = true)
+
+
+/*@Preview(showBackground = true)
 @Composable
 fun PreviewTitleScreen() {
     TitleScreen()
-}
+}*/
 
 
 
