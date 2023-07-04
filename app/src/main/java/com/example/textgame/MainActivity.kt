@@ -13,8 +13,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.textgame.ui.CharacterClass
 import com.example.textgame.ui.CharacterClassSelectionScreen
 import com.example.textgame.ui.TitleScreen
+import com.example.textgame.ui.WeaponScreen
 import com.example.textgame.ui.theme.TextGameTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,8 +32,20 @@ class MainActivity : ComponentActivity() {
                     // Create a NavHost with the NavController
                     NavHost(navController = navController, startDestination = "titleScreen") {
                         composable("titleScreen") { TitleScreen(navController) }
-                        composable("characterClassSelectionScreen") { CharacterClassSelectionScreen() }
+                        composable("characterClassSelectionScreen") { CharacterClassSelectionScreen(navController) }
+                        composable("weaponScreen/{characterClass}") { backStackEntry ->
+                            val characterClass = backStackEntry.arguments?.getString("characterClass")?.let { CharacterClass.valueOf(it) }
+
+                            characterClass?.let {
+                                WeaponScreen(characterClass = it) {
+                                    // Navigate to the next screen when continue button is clicked.
+                                    // Replace "nextScreen" with your next screen's route.
+                                    navController.navigate("nextScreen")
+                                }
+                            } ?: Text("Character class not found")
+                        }
                     }
+
                 }
             }
         }
